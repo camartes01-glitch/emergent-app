@@ -64,6 +64,42 @@ export default function CameraRentalProfileScreen() {
     { value: 'tripod', label: 'Tripod' },
   ];
 
+  // Get available brands based on category
+  const getAvailableBrands = () => {
+    switch (currentEquipment.category) {
+      case 'camera':
+        return CAMERA_BRANDS;
+      case 'lens':
+        return LENS_BRANDS;
+      case 'gimbal':
+        return GIMBAL_BRANDS;
+      case 'tripod':
+        return TRIPOD_BRANDS;
+      case 'lighting':
+        return LIGHTING_BRANDS;
+      default:
+        return [];
+    }
+  };
+
+  // Get available models based on brand and category
+  const getAvailableModels = () => {
+    if (currentEquipment.category === 'camera' && CAMERA_MODELS[currentEquipment.brand]) {
+      return CAMERA_MODELS[currentEquipment.brand];
+    }
+    if (currentEquipment.category === 'gimbal') {
+      return GIMBAL_MODELS;
+    }
+    return [];
+  };
+
+  // Auto-fill model when brand and model are selected (for display only)
+  useEffect(() => {
+    if (currentEquipment.brand && currentEquipment.model) {
+      console.log('Camera Rental Auto-fill:', `${currentEquipment.brand} ${currentEquipment.model}`);
+    }
+  }, [currentEquipment.brand, currentEquipment.model]);
+
   const addEquipment = () => {
     if (!currentEquipment.brand || !currentEquipment.model || !currentEquipment.serviceNumber) {
       Alert.alert('Error', 'Please fill all required fields');
