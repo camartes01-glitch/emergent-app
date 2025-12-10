@@ -11,11 +11,20 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../../constants/colors';
-import { CAMERA_BRANDS } from '../../../constants/serviceData';
+import { 
+  CAMERA_BRANDS,
+  CAMERA_MODELS,
+  LENS_BRANDS,
+  GIMBAL_BRANDS,
+  GIMBAL_MODELS,
+  TRIPOD_BRANDS,
+  LIGHTING_BRANDS,
+} from '../../../constants/serviceData';
 import ImagePickerComponent from '../../../components/ImagePickerComponent';
 import api from '../../../services/api';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect } from 'react';
 
 interface RentalEquipment {
   id: string;
