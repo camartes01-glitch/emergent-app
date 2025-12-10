@@ -15,6 +15,7 @@ import { CAMERA_BRANDS } from '../../../constants/serviceData';
 import ImagePickerComponent from '../../../components/ImagePickerComponent';
 import api from '../../../services/api';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface RentalEquipment {
   id: string;
