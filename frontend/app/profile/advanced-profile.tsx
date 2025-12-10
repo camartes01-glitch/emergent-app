@@ -236,7 +236,10 @@ export default function AdvancedProfileScreen() {
         </TouchableOpacity>
       </View>
 
-        {/* Progress Indicator */}
+      {/* Scrollable Content */}
+      <ScrollView style={styles.scrollContent}>
+        <View style={styles.content}>
+          {/* Progress Indicator */}
         <View style={styles.progressContainer}>
           <View style={styles.progressBar}>
             <View 
