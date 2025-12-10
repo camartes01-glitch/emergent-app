@@ -176,23 +176,91 @@ export default function EquipmentPicker({
               ))}
             </ScrollView>
 
-            <Text style={styles.inputLabel}>Name *</Text>
+            {/* Brand Dropdown */}
+            {getAvailableBrands().length > 0 && (
+              <>
+                <Text style={styles.inputLabel}>Brand *</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.brandScroll}>
+                  {getAvailableBrands().map((brand) => (
+                    <TouchableOpacity
+                      key={brand}
+                      style={[
+                        styles.brandButton,
+                        selectedBrand === brand && styles.brandButtonActive,
+                      ]}
+                      onPress={() => {
+                        setSelectedBrand(brand);
+                        setSelectedModel(''); // Reset model when brand changes
+                      }}
+                    >
+                      <Text
+                        style={[
+                          styles.brandButtonText,
+                          selectedBrand === brand && styles.brandButtonTextActive,
+                        ]}
+                      >
+                        {brand}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </>
+            )}
+
+            {/* Model Dropdown */}
+            {selectedBrand && getAvailableModels().length > 0 && (
+              <>
+                <Text style={styles.inputLabel}>Model *</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.brandScroll}>
+                  {getAvailableModels().map((modelOption) => (
+                    <TouchableOpacity
+                      key={modelOption}
+                      style={[
+                        styles.brandButton,
+                        selectedModel === modelOption && styles.brandButtonActive,
+                      ]}
+                      onPress={() => {
+                        setSelectedModel(modelOption);
+                        setModel(modelOption);
+                      }}
+                    >
+                      <Text
+                        style={[
+                          styles.brandButtonText,
+                          selectedModel === modelOption && styles.brandButtonTextActive,
+                        ]}
+                      >
+                        {modelOption}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </>
+            )}
+
+            {/* Name (Auto-filled or Manual) */}
+            <Text style={styles.inputLabel}>Equipment Name *</Text>
             <TextInput
               style={styles.input}
-              placeholder="Equipment name"
+              placeholder="Auto-filled from brand + model"
               placeholderTextColor={Colors.placeholder}
               value={name}
               onChangeText={setName}
             />
 
-            <Text style={styles.inputLabel}>Model *</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Model number"
-              placeholderTextColor={Colors.placeholder}
-              value={model}
-              onChangeText={setModel}
-            />
+            {/* Model (Manual input for types without predefined models) */}
+            {(!selectedBrand || getAvailableModels().length === 0) && (
+              <>
+                <Text style={styles.inputLabel}>Model *</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Model number"
+                  placeholderTextColor={Colors.placeholder}
+                  value={model}
+                  onChangeText={setModel}
+                />
+              </>
+            )}
 
             <Text style={styles.inputLabel}>Service Number</Text>
             <TextInput
