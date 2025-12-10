@@ -83,9 +83,11 @@ export default function EquipmentPicker({
   };
 
   // Auto-fill name when brand and model are selected
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedBrand && selectedModel) {
-      setName(`${selectedBrand} ${selectedModel}`);
+      const autoFilledName = `${selectedBrand} ${selectedModel}`;
+      setName(autoFilledName);
+      console.log('Auto-filled name:', autoFilledName);
     }
   }, [selectedBrand, selectedModel]);
 
