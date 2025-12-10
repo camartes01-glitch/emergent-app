@@ -316,4 +316,68 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Colors.text,
   },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.background,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 14,
+    color: Colors.textLight,
+  },
+  progressContainer: {
+    marginBottom: 32,
+  },
+  progressBar: {
+    height: 8,
+    backgroundColor: Colors.border,
+    borderRadius: 4,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: Colors.primary,
+    borderRadius: 4,
+  },
+  progressText: {
+    fontSize: 12,
+    color: Colors.textLight,
+    textAlign: 'center',
+  },
+  serviceNumber: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  serviceNumberText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.text,
+  },
+  serviceItemCompleted: {
+    backgroundColor: '#F0FFF4',
+    borderColor: Colors.success,
+  },
+  serviceItemCurrent: {
+    borderColor: Colors.primary,
+    borderWidth: 2,
+  },
+  currentBadge: {
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+  currentBadgeText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: Colors.background,
+  },
 });
