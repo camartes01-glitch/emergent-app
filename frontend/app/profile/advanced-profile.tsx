@@ -221,23 +221,20 @@ export default function AdvancedProfileScreen() {
     : 0;
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.title}>Advanced Profile Building</Text>
-            <Text style={styles.subtitle}>
-              Select any service to complete your profile
-            </Text>
-          </View>
-          <TouchableOpacity 
-            style={styles.editButton}
-            onPress={() => router.push('/profile/initial-selection')}
-          >
-            <Ionicons name="create" size={20} color={Colors.primary} />
-            <Text style={styles.editButtonText}>Edit Services</Text>
-          </TouchableOpacity>
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <View style={styles.headerContent}>
+          <Text style={styles.title}>Profile Building</Text>
+          <Text style={styles.subtitle}>Complete one service at a time</Text>
         </View>
+        <TouchableOpacity 
+          style={styles.editIconButton}
+          onPress={() => router.push('/profile/initial-selection')}
+        >
+          <Ionicons name="create-outline" size={24} color={Colors.primary} />
+        </TouchableOpacity>
+      </View>
 
         {/* Progress Indicator */}
         <View style={styles.progressContainer}>
