@@ -20,7 +20,7 @@ export default function Index() {
         router.replace('/auth/login');
       }
     }
-  }, [isAuthenticated, isLoading, user]);
+  }, [isAuthenticated, isLoading]);
 
   return (
     <View style={styles.container}>
