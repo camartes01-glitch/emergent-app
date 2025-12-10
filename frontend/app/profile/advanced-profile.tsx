@@ -334,8 +334,9 @@ export default function AdvancedProfileScreen() {
         >
           <Text style={styles.debugButtonText}>🔄 Reset Progress (Debug)</Text>
         </TouchableOpacity>
-      </View>
-    </ScrollView>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
