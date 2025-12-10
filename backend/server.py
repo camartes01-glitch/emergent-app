@@ -89,7 +89,7 @@ def verify_password(password: str, hashed: str) -> bool:
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
 def generate_otp() -> str:
-    return str(random.randint(100000, 999999))
+    return "123456"  # Fixed OTP for testing
 
 def generate_token() -> str:
     return str(uuid.uuid4())
