@@ -51,8 +51,10 @@ class BackendTester:
     
     def test_send_signup_otp(self):
         """Test POST /api/auth/send-signup-otp"""
-        test_email = "john.doe@camartes.com"
-        test_phone = "+1234567890"
+        import time
+        timestamp = str(int(time.time()))
+        test_email = f"john.doe.{timestamp}@camartes.com"
+        test_phone = f"+123456{timestamp[-4:]}"
         
         payload = {
             "email": test_email,
