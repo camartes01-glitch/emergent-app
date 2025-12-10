@@ -256,9 +256,16 @@ export default function AdvancedProfileScreen() {
         ) : completedServices.length < allServices.length ? (
           <TouchableOpacity 
             style={styles.button} 
-            onPress={() => navigateToService(allServices[currentStep])}
+            onPress={() => {
+              const nextServiceIndex = getCurrentServiceIndex();
+              if (nextServiceIndex < allServices.length) {
+                navigateToService(allServices[nextServiceIndex]);
+              }
+            }}
           >
-            <Text style={styles.buttonText}>Continue with Next Service</Text>
+            <Text style={styles.buttonText}>
+              Continue with Next Service ({completedServices.length}/{allServices.length})
+            </Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity 
