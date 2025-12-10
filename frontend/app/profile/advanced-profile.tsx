@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
@@ -13,11 +14,28 @@ import { useAuthStore } from '../../stores/authStore';
 import { Ionicons } from '@expo/vector-icons';
 import api from '../../services/api';
 
+const SERVICE_NAMES: Record<string, string> = {
+  photographer: 'Photographer',
+  videographer: 'Videographer',
+  album_designer: 'Album Designer',
+  video_editor: 'Video Editor',
+  web_live_services: 'Web Live Services',
+  led_wall: 'LED Wall',
+  fly_cam: 'Fly Cam',
+  photography_firm: 'Photography Firm',
+  camera_rental: 'Camera Rental',
+  service_centres: 'Service Centres',
+  outdoor_studios: 'Outdoor Studios',
+  editing_studios: 'Editing Studios',
+  printing_labs: 'Printing Labs',
+  software: 'Software',
+  oem: 'OEM',
+};
+
 const SERVICE_ROUTES: Record<string, string> = {
   photographer: '/profile/services/photographer',
-  videographer: '/profile/services/photographer', // Reuse photographer form
+  videographer: '/profile/services/photographer',
   camera_rental: '/profile/services/camera-rental',
-  // Add other services as needed
 };
 
 export default function AdvancedProfileScreen() {
@@ -25,6 +43,9 @@ export default function AdvancedProfileScreen() {
   const { user, updateUser } = useAuthStore();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [allServices, setAllServices] = useState<string[]>([]);
+  const [completedServices, setCompletedServices] = useState<string[]>([]);
 
   useEffect(() => {
     loadProfile();
@@ -34,6 +55,13 @@ export default function AdvancedProfileScreen() {
     try {
       const response = await api.get(`/profile/${user?.id}`);
       setProfile(response.data);
+      
+      // Combine all selected services
+      const services = [
+        ...(response.data.freelancerServices || []),
+        ...(response.data.businessServices || []),
+      ];
+      setAllServices(services);
     } catch (error) {
       console.log('No profile found yet');
     } finally {
@@ -46,9 +74,14 @@ export default function AdvancedProfileScreen() {
     router.replace('/(tabs)/home');
   };
 
-  const handleSubmit = async () => {
-    updateUser({ profileCompleted: true });
-    router.replace('/(tabs)/home');
+  const handleStartProfile = () => {
+    if (allServices.length === 0) {
+      Alert.alert('Error', 'No services selected');
+      return;
+    }
+    
+    const firstService = allServices[0];
+    navigateToService(firstService);
   };
 
   const navigateToService = (serviceId: string) => {
@@ -56,73 +89,151 @@ export default function AdvancedProfileScreen() {
     if (route) {
       router.push(route as any);
     } else {
-      Alert.alert('Coming Soon', `${serviceId} profile form is under development`);
+      // Service form not implemented yet - mark as completed and move to next
+      Alert.alert(
+        'Coming Soon',
+        `${SERVICE_NAMES[serviceId]} profile form is under development. Marking as completed.`,
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              markServiceCompleted(serviceId);
+            },
+          },
+        ]
+      );
+    }
+  };
+
+  const markServiceCompleted = (serviceId: string) => {
+    const newCompleted = [...completedServices, serviceId];
+    setCompletedServices(newCompleted);
+    
+    const nextIndex = allServices.indexOf(serviceId) + 1;
+    if (nextIndex < allServices.length) {
+      // Move to next service
+      setCurrentStep(nextIndex);
+      setTimeout(() => {
+        navigateToService(allServices[nextIndex]);
+      }, 500);
+    } else {
+      // All services completed
+      Alert.alert(
+        'Profile Complete',
+        'All service profiles have been completed!',
+        [
+          {
+            text: 'Go to Home',
+            onPress: () => {
+              updateUser({ profileCompleted: true });
+              router.replace('/(tabs)/home');
+            },
+          },
+        ]
+      );
     }
   };
 
   if (loading) {
     return (
-      <View style={styles.container}>
-        <Text>Loading...</Text>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+        <Text style={styles.loadingText}>Loading profile...</Text>
       </View>
     );
   }
+
+  const progressPercentage = allServices.length > 0 
+    ? (completedServices.length / allServices.length) * 100 
+    : 0;
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>Advanced Profile Building</Text>
         <Text style={styles.subtitle}>
-          Complete your profile for each selected service
+          Complete your profile for each selected service - one by one
         </Text>
 
-        {/* Freelancer Services */}
-        {profile?.freelancerServices && profile.freelancerServices.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Freelancer Services</Text>
-            {profile.freelancerServices.map((service: string) => (
-              <TouchableOpacity
+        {/* Progress Indicator */}
+        <View style={styles.progressContainer}>
+          <View style={styles.progressBar}>
+            <View 
+              style={[
+                styles.progressFill, 
+                { width: `${progressPercentage}%` }
+              ]} 
+            />
+          </View>
+          <Text style={styles.progressText}>
+            {completedServices.length} of {allServices.length} completed
+          </Text>
+        </View>
+
+        {/* Service List with Status */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Your Selected Services</Text>
+          {allServices.map((service, index) => {
+            const isCompleted = completedServices.includes(service);
+            const isCurrent = index === currentStep && !isCompleted;
+            
+            return (
+              <View
                 key={service}
-                style={styles.serviceItem}
-                onPress={() => navigateToService(service)}
+                style={[
+                  styles.serviceItem,
+                  isCompleted && styles.serviceItemCompleted,
+                  isCurrent && styles.serviceItemCurrent,
+                ]}
               >
                 <View style={styles.serviceInfo}>
-                  <Ionicons name="camera" size={24} color={Colors.primary} />
+                  <View style={styles.serviceNumber}>
+                    {isCompleted ? (
+                      <Ionicons name="checkmark-circle" size={24} color={Colors.success} />
+                    ) : (
+                      <Text style={styles.serviceNumberText}>{index + 1}</Text>
+                    )}
+                  </View>
                   <Text style={styles.serviceName}>
-                    {service.replace('_', ' ').toUpperCase()}
+                    {SERVICE_NAMES[service] || service}
                   </Text>
                 </View>
-                <Ionicons name="chevron-forward" size={20} color={Colors.secondary} />
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
+                {isCurrent && (
+                  <View style={styles.currentBadge}>
+                    <Text style={styles.currentBadgeText}>CURRENT</Text>
+                  </View>
+                )}
+                {isCompleted && (
+                  <Ionicons name="checkmark-circle" size={20} color={Colors.success} />
+                )}
+              </View>
+            );
+          })}
+        </View>
 
-        {/* Business Services */}
-        {profile?.businessServices && profile.businessServices.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Business Services</Text>
-            {profile.businessServices.map((service: string) => (
-              <TouchableOpacity
-                key={service}
-                style={styles.serviceItem}
-                onPress={() => navigateToService(service)}
-              >
-                <View style={styles.serviceInfo}>
-                  <Ionicons name="briefcase" size={24} color={Colors.primary} />
-                  <Text style={styles.serviceName}>
-                    {service.replace('_', ' ').toUpperCase()}
-                  </Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color={Colors.secondary} />
-              </TouchableOpacity>
-            ))}
-          </View>
+        {/* Action Buttons */}
+        {completedServices.length === 0 ? (
+          <TouchableOpacity style={styles.button} onPress={handleStartProfile}>
+            <Text style={styles.buttonText}>Start Profile Building</Text>
+          </TouchableOpacity>
+        ) : completedServices.length < allServices.length ? (
+          <TouchableOpacity 
+            style={styles.button} 
+            onPress={() => navigateToService(allServices[currentStep])}
+          >
+            <Text style={styles.buttonText}>Continue with Next Service</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity 
+            style={styles.button} 
+            onPress={() => {
+              updateUser({ profileCompleted: true });
+              router.replace('/(tabs)/home');
+            }}
+          >
+            <Text style={styles.buttonText}>Complete & Go to Home</Text>
+          </TouchableOpacity>
         )}
-
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Complete Profile</Text>
-        </TouchableOpacity>
 
         <TouchableOpacity style={styles.secondaryButton} onPress={handleContinueLater}>
           <Text style={styles.secondaryButtonText}>Continue Later</Text>
