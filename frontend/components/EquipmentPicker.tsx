@@ -114,6 +114,8 @@ export default function EquipmentPicker({
 
   const resetForm = () => {
     setSelectedType('');
+    setSelectedBrand('');
+    setSelectedModel('');
     setName('');
     setModel('');
     setServiceNumber('');
