@@ -64,7 +64,10 @@ export default function AdvancedProfileScreen() {
   useFocusEffect(
     React.useCallback(() => {
       // Reload completed services when screen comes into focus
-      loadCompletedServices();
+      loadCompletedServices().then(() => {
+        // Auto-navigate to next service if there are uncompleted services
+        checkAndNavigateNext();
+      });
     }, [])
   );
 
