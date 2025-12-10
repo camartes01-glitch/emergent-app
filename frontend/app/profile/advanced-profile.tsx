@@ -56,6 +56,7 @@ export default function AdvancedProfileScreen() {
   const [currentStep, setCurrentStep] = useState(0);
   const [allServices, setAllServices] = useState<string[]>([]);
   const [completedServices, setCompletedServices] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<string>('');
 
   useEffect(() => {
     loadProfile();
