@@ -515,11 +515,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  editButtonText: {
-    color: Colors.primary,
-    fontSize: 12,
-    fontWeight: '600',
-  },
   sectionSubtitle: {
     fontSize: 14,
     color: Colors.secondary,
