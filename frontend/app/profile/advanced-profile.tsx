@@ -136,8 +136,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
+  },
+  content: {
     padding: 24,
-    justifyContent: 'center',
   },
   title: {
     fontSize: 28,
