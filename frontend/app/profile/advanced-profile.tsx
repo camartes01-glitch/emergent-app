@@ -61,6 +61,13 @@ export default function AdvancedProfileScreen() {
     loadProfile();
   }, []);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      // Reload completed services when screen comes into focus
+      loadCompletedServices();
+    }, [])
+  );
+
   const loadProfile = async () => {
     try {
       const response = await api.get(`/profile/${user?.id}`);
@@ -72,10 +79,22 @@ export default function AdvancedProfileScreen() {
         ...(response.data.businessServices || []),
       ];
       setAllServices(services);
+      await loadCompletedServices();
     } catch (error) {
       console.log('No profile found yet');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadCompletedServices = async () => {
+    try {
+      const completed = await AsyncStorage.getItem('completed_services');
+      if (completed) {
+        setCompletedServices(JSON.parse(completed));
+      }
+    } catch (error) {
+      console.log('Error loading completed services:', error);
     }
   };
 
