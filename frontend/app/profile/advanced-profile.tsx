@@ -8,11 +8,12 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { useAuthStore } from '../../stores/authStore';
 import { Ionicons } from '@expo/vector-icons';
 import api from '../../services/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SERVICE_NAMES: Record<string, string> = {
   photographer: 'Photographer',
