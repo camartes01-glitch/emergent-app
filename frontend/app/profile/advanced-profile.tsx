@@ -302,25 +302,14 @@ export default function AdvancedProfileScreen() {
         </View>
 
         {/* Action Buttons */}
-        {completedServices.length === 0 ? (
-          <TouchableOpacity style={styles.button} onPress={handleStartProfile}>
-            <Text style={styles.buttonText}>Start Profile Building</Text>
-          </TouchableOpacity>
-        ) : completedServices.length < allServices.length ? (
+        {allServices.length === 0 ? (
           <TouchableOpacity 
             style={styles.button} 
-            onPress={() => {
-              const nextServiceIndex = getCurrentServiceIndex();
-              if (nextServiceIndex < allServices.length) {
-                navigateToService(allServices[nextServiceIndex]);
-              }
-            }}
+            onPress={() => router.push('/profile/initial-selection')}
           >
-            <Text style={styles.buttonText}>
-              Continue with Next Service ({completedServices.length}/{allServices.length})
-            </Text>
+            <Text style={styles.buttonText}>Select Services</Text>
           </TouchableOpacity>
-        ) : (
+        ) : completedServices.length === allServices.length ? (
           <TouchableOpacity 
             style={styles.button} 
             onPress={() => {
@@ -330,7 +319,7 @@ export default function AdvancedProfileScreen() {
           >
             <Text style={styles.buttonText}>Complete & Go to Home</Text>
           </TouchableOpacity>
-        )}
+        ) : null}
 
         <TouchableOpacity style={styles.secondaryButton} onPress={handleContinueLater}>
           <Text style={styles.secondaryButtonText}>Continue Later</Text>
