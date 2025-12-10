@@ -101,6 +101,35 @@ export default function AdvancedProfileScreen() {
     }
   };
 
+  const checkAndNavigateNext = async () => {
+    // Wait a bit for state to update
+    setTimeout(() => {
+      const nextIndex = completedServices.length;
+      
+      // If there are completed services but not all services are done
+      if (completedServices.length > 0 && completedServices.length < allServices.length) {
+        const nextService = allServices[nextIndex];
+        if (nextService) {
+          // Show alert before navigating to next service
+          Alert.alert(
+            'Service Completed!',
+            `Great! Let's continue with ${SERVICE_NAMES[nextService] || nextService}`,
+            [
+              {
+                text: 'Continue',
+                onPress: () => navigateToService(nextService),
+              },
+              {
+                text: 'Later',
+                style: 'cancel',
+              },
+            ]
+          );
+        }
+      }
+    }, 500);
+  };
+
   const handleContinueLater = () => {
     updateUser({ profileCompleted: true });
     router.replace('/(tabs)/home');
