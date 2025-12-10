@@ -96,8 +96,21 @@ export default function CameraRentalProfileScreen() {
     setLoading(true);
     try {
       await api.post('/profile/camera-rental', { equipment });
-      Alert.alert('Success', 'Camera rental profile saved successfully');
-      router.back();
+      
+      // Mark service as completed
+      const completedStr = await AsyncStorage.getItem('completed_services');
+      const completed = completedStr ? JSON.parse(completedStr) : [];
+      if (!completed.includes('camera_rental')) {
+        completed.push('camera_rental');
+        await AsyncStorage.setItem('completed_services', JSON.stringify(completed));
+      }
+      
+      Alert.alert('Success', 'Camera rental profile saved successfully', [
+        {
+          text: 'OK',
+          onPress: () => router.replace('/profile/advanced-profile'),
+        },
+      ]);
     } catch (error: any) {
       Alert.alert('Error', error.response?.data?.detail || 'Failed to save profile');
     } finally {
