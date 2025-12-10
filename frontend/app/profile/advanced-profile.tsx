@@ -498,16 +498,15 @@ const styles = StyleSheet.create({
   headerContent: {
     flex: 1,
   },
-  editButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  editIconButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: Colors.background,
     borderWidth: 1,
     borderColor: Colors.primary,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    gap: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   editButtonText: {
     color: Colors.primary,
