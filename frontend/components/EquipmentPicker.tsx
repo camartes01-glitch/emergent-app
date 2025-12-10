@@ -42,9 +42,52 @@ export default function EquipmentPicker({
 }: EquipmentPickerProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedType, setSelectedType] = useState('');
+  const [selectedBrand, setSelectedBrand] = useState('');
+  const [selectedModel, setSelectedModel] = useState('');
   const [name, setName] = useState('');
   const [model, setModel] = useState('');
   const [serviceNumber, setServiceNumber] = useState('');
+  const [showBrandPicker, setShowBrandPicker] = useState(false);
+  const [showModelPicker, setShowModelPicker] = useState(false);
+
+  // Get available brands based on equipment type
+  const getAvailableBrands = () => {
+    switch (selectedType) {
+      case 'Camera':
+        return CAMERA_BRANDS;
+      case 'Lenses':
+        return LENS_BRANDS;
+      case 'Gimbal':
+        return GIMBAL_BRANDS;
+      case 'Tripod':
+        return TRIPOD_BRANDS;
+      case 'Drone':
+        return DRONE_BRANDS;
+      default:
+        return [];
+    }
+  };
+
+  // Get available models based on brand
+  const getAvailableModels = () => {
+    if (selectedType === 'Camera' && CAMERA_MODELS[selectedBrand]) {
+      return CAMERA_MODELS[selectedBrand];
+    }
+    if (selectedType === 'Gimbal') {
+      return GIMBAL_MODELS;
+    }
+    if (selectedType === 'Drone') {
+      return DRONE_MODELS;
+    }
+    return [];
+  };
+
+  // Auto-fill name when brand and model are selected
+  React.useEffect(() => {
+    if (selectedBrand && selectedModel) {
+      setName(`${selectedBrand} ${selectedModel}`);
+    }
+  }, [selectedBrand, selectedModel]);
 
   const addEquipment = () => {
     if (!selectedType || !name || !model) {
