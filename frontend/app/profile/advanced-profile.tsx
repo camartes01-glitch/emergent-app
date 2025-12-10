@@ -320,6 +320,18 @@ export default function AdvancedProfileScreen() {
         <TouchableOpacity style={styles.secondaryButton} onPress={handleContinueLater}>
           <Text style={styles.secondaryButtonText}>Continue Later</Text>
         </TouchableOpacity>
+
+        {/* Debug: Reset Button (Remove in production) */}
+        <TouchableOpacity 
+          style={styles.debugButton} 
+          onPress={async () => {
+            await AsyncStorage.removeItem('completed_services');
+            setCompletedServices([]);
+            Alert.alert('Debug', 'Completed services cleared. You can now restart profile building.');
+          }}
+        >
+          <Text style={styles.debugButtonText}>🔄 Reset Progress (Debug)</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
