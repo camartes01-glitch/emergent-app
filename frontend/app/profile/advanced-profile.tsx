@@ -474,4 +474,18 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Colors.background,
   },
+  debugButton: {
+    backgroundColor: '#FF6B6B',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: '#FF5252',
+  },
+  debugButtonText: {
+    color: Colors.background,
+    fontSize: 14,
+    fontWeight: '600',
+  },
 });
