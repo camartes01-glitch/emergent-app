@@ -245,29 +245,88 @@ export default function CameraRentalProfileScreen() {
               ))}
             </View>
 
-            {/* Brand */}
-            <Text style={styles.label}>Brand *</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Select or enter brand"
-              placeholderTextColor={Colors.placeholder}
-              value={currentEquipment.brand}
-              onChangeText={(text) =>
-                setCurrentEquipment({ ...currentEquipment, brand: text })
-              }
-            />
+            {/* Brand Dropdown */}
+            {getAvailableBrands().length > 0 && (
+              <>
+                <Text style={styles.label}>Brand *</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.brandScroll}>
+                  {getAvailableBrands().map((brand) => (
+                    <TouchableOpacity
+                      key={brand}
+                      style={[
+                        styles.brandButton,
+                        currentEquipment.brand === brand && styles.brandButtonActive,
+                      ]}
+                      onPress={() => {
+                        setCurrentEquipment({
+                          ...currentEquipment,
+                          brand: brand,
+                          model: '', // Reset model when brand changes
+                        });
+                      }}
+                    >
+                      <Text
+                        style={[
+                          styles.brandButtonText,
+                          currentEquipment.brand === brand && styles.brandButtonTextActive,
+                        ]}
+                      >
+                        {brand}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </>
+            )}
 
-            {/* Model */}
-            <Text style={styles.label}>Model Name *</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter model name"
-              placeholderTextColor={Colors.placeholder}
-              value={currentEquipment.model}
-              onChangeText={(text) =>
-                setCurrentEquipment({ ...currentEquipment, model: text })
-              }
-            />
+            {/* Model Dropdown (for Camera and Gimbal) */}
+            {currentEquipment.brand && getAvailableModels().length > 0 && (
+              <>
+                <Text style={styles.label}>Model *</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.brandScroll}>
+                  {getAvailableModels().map((modelOption) => (
+                    <TouchableOpacity
+                      key={modelOption}
+                      style={[
+                        styles.brandButton,
+                        currentEquipment.model === modelOption && styles.brandButtonActive,
+                      ]}
+                      onPress={() => {
+                        setCurrentEquipment({
+                          ...currentEquipment,
+                          model: modelOption,
+                        });
+                      }}
+                    >
+                      <Text
+                        style={[
+                          styles.brandButtonText,
+                          currentEquipment.model === modelOption && styles.brandButtonTextActive,
+                        ]}
+                      >
+                        {modelOption}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </>
+            )}
+
+            {/* Model Manual Input (for Lens, Lighting, Tripod) */}
+            {currentEquipment.brand && getAvailableModels().length === 0 && (
+              <>
+                <Text style={styles.label}>Model Name *</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter model name"
+                  placeholderTextColor={Colors.placeholder}
+                  value={currentEquipment.model}
+                  onChangeText={(text) =>
+                    setCurrentEquipment({ ...currentEquipment, model: text })
+                  }
+                />
+              </>
+            )}
 
             {/* Service Number */}
             <Text style={styles.label}>Service Number *</Text>
