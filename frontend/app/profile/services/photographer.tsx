@@ -64,6 +64,15 @@ export default function PhotographerProfileScreen() {
         equipment,
         pricing,
       });
+      
+      // Mark service as completed
+      const completedStr = await AsyncStorage.getItem('completed_services');
+      const completed = completedStr ? JSON.parse(completedStr) : [];
+      if (!completed.includes('photographer')) {
+        completed.push('photographer');
+        await AsyncStorage.setItem('completed_services', JSON.stringify(completed));
+      }
+      
       Alert.alert('Success', 'Photographer profile saved successfully', [
         {
           text: 'OK',
