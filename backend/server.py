@@ -286,6 +286,9 @@ async def get_profile(user_id: str):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Profile not found"
         )
+    # Remove MongoDB ObjectId to make it JSON serializable
+    if "_id" in profile:
+        del profile["_id"]
     return profile
 
 # ========================
