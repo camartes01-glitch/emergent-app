@@ -1,99 +1,238 @@
-diff --git a/backend/server.py b/backend/server.py
-index 41316df..f0734c2 100644
---- a/backend/server.py
-+++ b/backend/server.py
-@@ -286,6 +286,9 @@ async def get_profile(user_id: str):
-             status_code=status.HTTP_404_NOT_FOUND,
-             detail="Profile not found"
-         )
-+    # Remove MongoDB ObjectId to make it JSON serializable
-+    if "_id" in profile:
-+        del profile["_id"]
-     return profile
+diff --git a/frontend/app/profile/advanced-profile.tsx b/frontend/app/profile/advanced-profile.tsx
+index 151e1e2..66ba62d 100644
+--- a/frontend/app/profile/advanced-profile.tsx
++++ b/frontend/app/profile/advanced-profile.tsx
+@@ -225,10 +225,21 @@ export default function AdvancedProfileScreen() {
+   return (
+     <ScrollView style={styles.container}>
+       <View style={styles.content}>
+-        <Text style={styles.title}>Advanced Profile Building</Text>
+-        <Text style={styles.subtitle}>
+-          Complete your profile for each selected service - one by one
+-        </Text>
++        <View style={styles.header}>
++          <View>
++            <Text style={styles.title}>Advanced Profile Building</Text>
++            <Text style={styles.subtitle}>
++              Select any service to complete your profile
++            </Text>
++          </View>
++          <TouchableOpacity 
++            style={styles.editButton}
++            onPress={() => router.push('/profile/initial-selection')}
++          >
++            <Ionicons name="create" size={20} color={Colors.primary} />
++            <Text style={styles.editButtonText}>Edit Services</Text>
++          </TouchableOpacity>
++        </View>
  
- # ========================
-diff --git a/test_result.md b/test_result.md
-index 4fcd7fc..bf21f3a 100644
---- a/test_result.md
-+++ b/test_result.md
-@@ -113,39 +113,48 @@ user_problem_statement: |
- backend:
-   - task: "Auth API - Signup with OTP"
-     implemented: true
--    working: "NA"
-+    working: true
-     file: "/app/backend/server.py"
-     stuck_count: 0
-     priority: "high"
--    needs_retesting: true
-+    needs_retesting: false
-     status_history:
-       - working: "NA"
-         agent: "main"
-         comment: "Implemented signup endpoint with OTP verification, password hashing using bcrypt"
-+      - working: true
-+        agent: "testing"
-+        comment: "✅ TESTED: POST /api/auth/send-signup-otp and /api/auth/signup working correctly. OTP generation, user creation, password hashing (bcrypt $2b$12$) verified. Duplicate user validation working."
-   
-   - task: "Auth API - Login with password/OTP"
-     implemented: true
--    working: "NA"
-+    working: true
-     file: "/app/backend/server.py"
-     stuck_count: 0
-     priority: "high"
--    needs_retesting: true
-+    needs_retesting: false
-     status_history:
-       - working: "NA"
-         agent: "main"
-         comment: "Implemented login endpoint supporting both password and OTP authentication"
-+      - working: true
-+        agent: "testing"
-+        comment: "✅ TESTED: All login methods working - email+password, phone+password, email+OTP, phone+OTP. Token generation, user data return, error handling for wrong credentials all verified."
-   
-   - task: "Profile API - Initial selection"
-     implemented: true
--    working: "NA"
-+    working: true
-     file: "/app/backend/server.py"
-     stuck_count: 0
-     priority: "high"
--    needs_retesting: true
-+    needs_retesting: false
-     status_history:
-       - working: "NA"
-         agent: "main"
-         comment: "Implemented profile creation endpoint for freelancer/business service selection"
-+      - working: true
-+        agent: "testing"
-+        comment: "✅ TESTED: POST /api/profile/initial-selection and GET /api/profile/{user_id} working correctly. Profile creation with freelancer, business, and mixed services verified. Fixed ObjectId serialization issue."
+         {/* Progress Indicator */}
+         <View style={styles.progressContainer}>
+@@ -245,21 +256,21 @@ export default function AdvancedProfileScreen() {
+           </Text>
+         </View>
  
- frontend:
-   - task: "Authentication UI - Login screen"
-@@ -211,18 +220,17 @@ frontend:
- metadata:
-   created_by: "main_agent"
-   version: "1.0"
--  test_sequence: 0
-+  test_sequence: 1
-   run_ui: false
- 
- test_plan:
--  current_focus:
--    - "Auth API - Signup with OTP"
--    - "Auth API - Login with password/OTP"
--    - "Profile API - Initial selection"
-+  current_focus: []
-   stuck_tasks: []
-   test_all: false
-   test_priority: "high_first"
- 
- agent_communication:
-   - agent: "main"
--    message: "Phase 1 implementation complete. Created authentication system (login/signup with OTP), profile building screens, and main app navigation. Login UI verified working. Need to test backend APIs and full authentication flow."
+-        {/* Service List with Status */}
++        {/* Service List with Status - CLICKABLE */}
+         <View style={styles.section}>
+           <Text style={styles.sectionTitle}>Your Selected Services</Text>
++          <Text style={styles.sectionSubtitle}>Tap any service to build profile</Text>
+           {allServices.map((service, index) => {
+             const isCompleted = completedServices.includes(service);
+-            const isCurrent = index === getCurrentServiceIndex() && !isCompleted;
+             
+             return (
+-              <View
++              <TouchableOpacity
+                 key={service}
+                 style={[
+                   styles.serviceItem,
+                   isCompleted && styles.serviceItemCompleted,
+-                  isCurrent && styles.serviceItemCurrent,
+                 ]}
++                onPress={() => navigateToService(service)}
+               >
+                 <View style={styles.serviceInfo}>
+                   <View style={styles.serviceNumber}>
+@@ -269,19 +280,23 @@ export default function AdvancedProfileScreen() {
+                       <Text style={styles.serviceNumberText}>{index + 1}</Text>
+                     )}
+                   </View>
+-                  <Text style={styles.serviceName}>
+-                    {SERVICE_NAMES[service] || service}
+-                  </Text>
+-                </View>
+-                {isCurrent && (
+-                  <View style={styles.currentBadge}>
+-                    <Text style={styles.currentBadgeText}>CURRENT</Text>
++                  <View style={styles.serviceTextContainer}>
++                    <Text style={styles.serviceName}>
++                      {SERVICE_NAMES[service] || service}
++                    </Text>
++                    {isCompleted ? (
++                      <Text style={styles.serviceStatus}>Completed</Text>
++                    ) : (
++                      <Text style={styles.serviceStatus}>Tap to build profile</Text>
++                    )}
+                   </View>
+-                )}
+-                {isCompleted && (
+-                  <Ionicons name="checkmark-circle" size={20} color={Colors.success} />
+-                )}
+-              </View>
++                </View>
++                <Ionicons 
++                  name="chevron-forward" 
++                  size={20} 
++                  color={isCompleted ? Colors.success : Colors.secondary} 
++                />
++              </TouchableOpacity>
+             );
+           })}
+         </View>
+@@ -488,4 +503,40 @@ const styles = StyleSheet.create({
+     fontSize: 14,
+     fontWeight: '600',
+   },
++  header: {
++    flexDirection: 'row',
++    justifyContent: 'space-between',
++    alignItems: 'flex-start',
++    marginBottom: 32,
++  },
++  editButton: {
++    flexDirection: 'row',
++    alignItems: 'center',
++    backgroundColor: Colors.background,
++    borderWidth: 1,
++    borderColor: Colors.primary,
++    paddingHorizontal: 12,
++    paddingVertical: 8,
++    borderRadius: 8,
++    gap: 6,
++  },
++  editButtonText: {
++    color: Colors.primary,
++    fontSize: 12,
++    fontWeight: '600',
++  },
++  sectionSubtitle: {
++    fontSize: 14,
++    color: Colors.secondary,
++    marginBottom: 16,
++    fontStyle: 'italic',
++  },
++  serviceTextContainer: {
++    flex: 1,
++  },
++  serviceStatus: {
++    fontSize: 12,
++    color: Colors.secondary,
++    marginTop: 2,
++  },
+ });
 \ No newline at end of file
-+    message: "Phase 1 implementation complete. Created authentication system (login/signup with OTP), profile building screens, and main app navigation. Login UI verified working. Need to test backend APIs and full authentication flow."
-+  - agent: "testing"
-+    message: "✅ BACKEND TESTING COMPLETE: All high-priority backend APIs tested and working. Authentication flow (signup with OTP, login with password/OTP), profile creation/retrieval all functional. Fixed ObjectId serialization issue in GET profile endpoint. Password hashing with bcrypt verified. Error handling tested. Ready for frontend integration testing or production deployment."
-\ No newline at end of file
+diff --git a/model.patch b/model.patch
+index ef0f9aa..60318b0 100644
+--- a/model.patch
++++ b/model.patch
+@@ -1,99 +0,0 @@
+-diff --git a/backend/server.py b/backend/server.py
+-index 41316df..f0734c2 100644
+---- a/backend/server.py
+-+++ b/backend/server.py
+-@@ -286,6 +286,9 @@ async def get_profile(user_id: str):
+-             status_code=status.HTTP_404_NOT_FOUND,
+-             detail="Profile not found"
+-         )
+-+    # Remove MongoDB ObjectId to make it JSON serializable
+-+    if "_id" in profile:
+-+        del profile["_id"]
+-     return profile
+- 
+- # ========================
+-diff --git a/test_result.md b/test_result.md
+-index 4fcd7fc..bf21f3a 100644
+---- a/test_result.md
+-+++ b/test_result.md
+-@@ -113,39 +113,48 @@ user_problem_statement: |
+- backend:
+-   - task: "Auth API - Signup with OTP"
+-     implemented: true
+--    working: "NA"
+-+    working: true
+-     file: "/app/backend/server.py"
+-     stuck_count: 0
+-     priority: "high"
+--    needs_retesting: true
+-+    needs_retesting: false
+-     status_history:
+-       - working: "NA"
+-         agent: "main"
+-         comment: "Implemented signup endpoint with OTP verification, password hashing using bcrypt"
+-+      - working: true
+-+        agent: "testing"
+-+        comment: "✅ TESTED: POST /api/auth/send-signup-otp and /api/auth/signup working correctly. OTP generation, user creation, password hashing (bcrypt $2b$12$) verified. Duplicate user validation working."
+-   
+-   - task: "Auth API - Login with password/OTP"
+-     implemented: true
+--    working: "NA"
+-+    working: true
+-     file: "/app/backend/server.py"
+-     stuck_count: 0
+-     priority: "high"
+--    needs_retesting: true
+-+    needs_retesting: false
+-     status_history:
+-       - working: "NA"
+-         agent: "main"
+-         comment: "Implemented login endpoint supporting both password and OTP authentication"
+-+      - working: true
+-+        agent: "testing"
+-+        comment: "✅ TESTED: All login methods working - email+password, phone+password, email+OTP, phone+OTP. Token generation, user data return, error handling for wrong credentials all verified."
+-   
+-   - task: "Profile API - Initial selection"
+-     implemented: true
+--    working: "NA"
+-+    working: true
+-     file: "/app/backend/server.py"
+-     stuck_count: 0
+-     priority: "high"
+--    needs_retesting: true
+-+    needs_retesting: false
+-     status_history:
+-       - working: "NA"
+-         agent: "main"
+-         comment: "Implemented profile creation endpoint for freelancer/business service selection"
+-+      - working: true
+-+        agent: "testing"
+-+        comment: "✅ TESTED: POST /api/profile/initial-selection and GET /api/profile/{user_id} working correctly. Profile creation with freelancer, business, and mixed services verified. Fixed ObjectId serialization issue."
+- 
+- frontend:
+-   - task: "Authentication UI - Login screen"
+-@@ -211,18 +220,17 @@ frontend:
+- metadata:
+-   created_by: "main_agent"
+-   version: "1.0"
+--  test_sequence: 0
+-+  test_sequence: 1
+-   run_ui: false
+- 
+- test_plan:
+--  current_focus:
+--    - "Auth API - Signup with OTP"
+--    - "Auth API - Login with password/OTP"
+--    - "Profile API - Initial selection"
+-+  current_focus: []
+-   stuck_tasks: []
+-   test_all: false
+-   test_priority: "high_first"
+- 
+- agent_communication:
+-   - agent: "main"
+--    message: "Phase 1 implementation complete. Created authentication system (login/signup with OTP), profile building screens, and main app navigation. Login UI verified working. Need to test backend APIs and full authentication flow."
+-\ No newline at end of file
+-+    message: "Phase 1 implementation complete. Created authentication system (login/signup with OTP), profile building screens, and main app navigation. Login UI verified working. Need to test backend APIs and full authentication flow."
+-+  - agent: "testing"
+-+    message: "✅ BACKEND TESTING COMPLETE: All high-priority backend APIs tested and working. Authentication flow (signup with OTP, login with password/OTP), profile creation/retrieval all functional. Fixed ObjectId serialization issue in GET profile endpoint. Password hashing with bcrypt verified. Error handling tested. Ready for frontend integration testing or production deployment."
+-\ No newline at end of file
