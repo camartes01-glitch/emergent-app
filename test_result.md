@@ -113,39 +113,48 @@ user_problem_statement: |
 backend:
   - task: "Auth API - Signup with OTP"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented signup endpoint with OTP verification, password hashing using bcrypt"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: POST /api/auth/send-signup-otp and /api/auth/signup working correctly. OTP generation, user creation, password hashing (bcrypt $2b$12$) verified. Duplicate user validation working."
   
   - task: "Auth API - Login with password/OTP"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented login endpoint supporting both password and OTP authentication"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: All login methods working - email+password, phone+password, email+OTP, phone+OTP. Token generation, user data return, error handling for wrong credentials all verified."
   
   - task: "Profile API - Initial selection"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented profile creation endpoint for freelancer/business service selection"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: POST /api/profile/initial-selection and GET /api/profile/{user_id} working correctly. Profile creation with freelancer, business, and mixed services verified. Fixed ObjectId serialization issue."
 
 frontend:
   - task: "Authentication UI - Login screen"
