@@ -1,0 +1,99 @@
+diff --git a/backend/server.py b/backend/server.py
+index 41316df..f0734c2 100644
+--- a/backend/server.py
++++ b/backend/server.py
+@@ -286,6 +286,9 @@ async def get_profile(user_id: str):
+             status_code=status.HTTP_404_NOT_FOUND,
+             detail="Profile not found"
+         )
++    # Remove MongoDB ObjectId to make it JSON serializable
++    if "_id" in profile:
++        del profile["_id"]
+     return profile
+ 
+ # ========================
+diff --git a/test_result.md b/test_result.md
+index 4fcd7fc..bf21f3a 100644
+--- a/test_result.md
++++ b/test_result.md
+@@ -113,39 +113,48 @@ user_problem_statement: |
+ backend:
+   - task: "Auth API - Signup with OTP"
+     implemented: true
+-    working: "NA"
++    working: true
+     file: "/app/backend/server.py"
+     stuck_count: 0
+     priority: "high"
+-    needs_retesting: true
++    needs_retesting: false
+     status_history:
+       - working: "NA"
+         agent: "main"
+         comment: "Implemented signup endpoint with OTP verification, password hashing using bcrypt"
++      - working: true
++        agent: "testing"
++        comment: "✅ TESTED: POST /api/auth/send-signup-otp and /api/auth/signup working correctly. OTP generation, user creation, password hashing (bcrypt $2b$12$) verified. Duplicate user validation working."
+   
+   - task: "Auth API - Login with password/OTP"
+     implemented: true
+-    working: "NA"
++    working: true
+     file: "/app/backend/server.py"
+     stuck_count: 0
+     priority: "high"
+-    needs_retesting: true
++    needs_retesting: false
+     status_history:
+       - working: "NA"
+         agent: "main"
+         comment: "Implemented login endpoint supporting both password and OTP authentication"
++      - working: true
++        agent: "testing"
++        comment: "✅ TESTED: All login methods working - email+password, phone+password, email+OTP, phone+OTP. Token generation, user data return, error handling for wrong credentials all verified."
+   
+   - task: "Profile API - Initial selection"
+     implemented: true
+-    working: "NA"
++    working: true
+     file: "/app/backend/server.py"
+     stuck_count: 0
+     priority: "high"
+-    needs_retesting: true
++    needs_retesting: false
+     status_history:
+       - working: "NA"
+         agent: "main"
+         comment: "Implemented profile creation endpoint for freelancer/business service selection"
++      - working: true
++        agent: "testing"
++        comment: "✅ TESTED: POST /api/profile/initial-selection and GET /api/profile/{user_id} working correctly. Profile creation with freelancer, business, and mixed services verified. Fixed ObjectId serialization issue."
+ 
+ frontend:
+   - task: "Authentication UI - Login screen"
+@@ -211,18 +220,17 @@ frontend:
+ metadata:
+   created_by: "main_agent"
+   version: "1.0"
+-  test_sequence: 0
++  test_sequence: 1
+   run_ui: false
+ 
+ test_plan:
+-  current_focus:
+-    - "Auth API - Signup with OTP"
+-    - "Auth API - Login with password/OTP"
+-    - "Profile API - Initial selection"
++  current_focus: []
+   stuck_tasks: []
+   test_all: false
+   test_priority: "high_first"
+ 
+ agent_communication:
+   - agent: "main"
+-    message: "Phase 1 implementation complete. Created authentication system (login/signup with OTP), profile building screens, and main app navigation. Login UI verified working. Need to test backend APIs and full authentication flow."
+\ No newline at end of file
++    message: "Phase 1 implementation complete. Created authentication system (login/signup with OTP), profile building screens, and main app navigation. Login UI verified working. Need to test backend APIs and full authentication flow."
++  - agent: "testing"
++    message: "✅ BACKEND TESTING COMPLETE: All high-priority backend APIs tested and working. Authentication flow (signup with OTP, login with password/OTP), profile creation/retrieval all functional. Fixed ObjectId serialization issue in GET profile endpoint. Password hashing with bcrypt verified. Error handling tested. Ready for frontend integration testing or production deployment."
+\ No newline at end of file
