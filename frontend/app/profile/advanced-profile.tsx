@@ -492,6 +492,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: 32,
+    paddingHorizontal: 24,
+    paddingTop: 24,
+  },
+  headerContent: {
+    flex: 1,
   },
   editButton: {
     flexDirection: 'row',
