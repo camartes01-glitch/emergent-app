@@ -225,10 +225,21 @@ export default function AdvancedProfileScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Advanced Profile Building</Text>
-        <Text style={styles.subtitle}>
-          Complete your profile for each selected service - one by one
-        </Text>
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.title}>Advanced Profile Building</Text>
+            <Text style={styles.subtitle}>
+              Select any service to complete your profile
+            </Text>
+          </View>
+          <TouchableOpacity 
+            style={styles.editButton}
+            onPress={() => router.push('/profile/initial-selection')}
+          >
+            <Ionicons name="create" size={20} color={Colors.primary} />
+            <Text style={styles.editButtonText}>Edit Services</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Progress Indicator */}
         <View style={styles.progressContainer}>
@@ -245,21 +256,21 @@ export default function AdvancedProfileScreen() {
           </Text>
         </View>
 
-        {/* Service List with Status */}
+        {/* Service List with Status - CLICKABLE */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Your Selected Services</Text>
+          <Text style={styles.sectionSubtitle}>Tap any service to build profile</Text>
           {allServices.map((service, index) => {
             const isCompleted = completedServices.includes(service);
-            const isCurrent = index === getCurrentServiceIndex() && !isCompleted;
             
             return (
-              <View
+              <TouchableOpacity
                 key={service}
                 style={[
                   styles.serviceItem,
                   isCompleted && styles.serviceItemCompleted,
-                  isCurrent && styles.serviceItemCurrent,
                 ]}
+                onPress={() => navigateToService(service)}
               >
                 <View style={styles.serviceInfo}>
                   <View style={styles.serviceNumber}>
@@ -269,19 +280,23 @@ export default function AdvancedProfileScreen() {
                       <Text style={styles.serviceNumberText}>{index + 1}</Text>
                     )}
                   </View>
-                  <Text style={styles.serviceName}>
-                    {SERVICE_NAMES[service] || service}
-                  </Text>
-                </View>
-                {isCurrent && (
-                  <View style={styles.currentBadge}>
-                    <Text style={styles.currentBadgeText}>CURRENT</Text>
+                  <View style={styles.serviceTextContainer}>
+                    <Text style={styles.serviceName}>
+                      {SERVICE_NAMES[service] || service}
+                    </Text>
+                    {isCompleted ? (
+                      <Text style={styles.serviceStatus}>Completed</Text>
+                    ) : (
+                      <Text style={styles.serviceStatus}>Tap to build profile</Text>
+                    )}
                   </View>
-                )}
-                {isCompleted && (
-                  <Ionicons name="checkmark-circle" size={20} color={Colors.success} />
-                )}
-              </View>
+                </View>
+                <Ionicons 
+                  name="chevron-forward" 
+                  size={20} 
+                  color={isCompleted ? Colors.success : Colors.secondary} 
+                />
+              </TouchableOpacity>
             );
           })}
         </View>
