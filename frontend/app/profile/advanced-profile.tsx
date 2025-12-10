@@ -102,32 +102,38 @@ export default function AdvancedProfileScreen() {
   };
 
   const checkAndNavigateNext = async () => {
-    // Wait a bit for state to update
-    setTimeout(() => {
-      const nextIndex = completedServices.length;
-      
-      // If there are completed services but not all services are done
-      if (completedServices.length > 0 && completedServices.length < allServices.length) {
-        const nextService = allServices[nextIndex];
-        if (nextService) {
-          // Show alert before navigating to next service
-          Alert.alert(
-            'Service Completed!',
-            `Great! Let's continue with ${SERVICE_NAMES[nextService] || nextService}`,
-            [
-              {
-                text: 'Continue',
-                onPress: () => navigateToService(nextService),
-              },
-              {
-                text: 'Later',
-                style: 'cancel',
-              },
-            ]
-          );
+    // Wait a bit for state to update and get fresh data from AsyncStorage
+    setTimeout(async () => {
+      try {
+        const completedStr = await AsyncStorage.getItem('completed_services');
+        const completed = completedStr ? JSON.parse(completedStr) : [];
+        const nextIndex = completed.length;
+        
+        // If there are completed services but not all services are done
+        if (completed.length > 0 && completed.length < allServices.length) {
+          const nextService = allServices[nextIndex];
+          if (nextService) {
+            // Show alert before navigating to next service
+            Alert.alert(
+              'Service Completed!',
+              `Great! Let's continue with ${SERVICE_NAMES[nextService] || nextService}`,
+              [
+                {
+                  text: 'Continue',
+                  onPress: () => navigateToService(nextService),
+                },
+                {
+                  text: 'Later',
+                  style: 'cancel',
+                },
+              ]
+            );
+          }
         }
+      } catch (error) {
+        console.error('Error in checkAndNavigateNext:', error);
       }
-    }, 500);
+    }, 800);
   };
 
   const handleContinueLater = () => {
