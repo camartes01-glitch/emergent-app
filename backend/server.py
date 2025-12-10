@@ -292,6 +292,119 @@ async def get_profile(user_id: str):
     return profile
 
 # ========================
+# Advanced Profile Routes
+# ========================
+
+@api_router.post("/profile/photographer")
+async def save_photographer_profile(data: dict):
+    photographer_profile = {
+        **data,
+        "serviceType": "photographer",
+        "createdAt": datetime.utcnow()
+    }
+    await db.service_profiles.insert_one(photographer_profile)
+    return {"message": "Photographer profile saved successfully"}
+
+@api_router.post("/profile/camera-rental")
+async def save_camera_rental_profile(data: dict):
+    camera_rental_profile = {
+        **data,
+        "serviceType": "camera_rental",
+        "createdAt": datetime.utcnow()
+    }
+    await db.service_profiles.insert_one(camera_rental_profile)
+    return {"message": "Camera rental profile saved successfully"}
+
+# ========================
+# Inventory Management Routes
+# ========================
+
+@api_router.get("/inventory/status")
+async def get_inventory_status():
+    # Mock data for now - in production, fetch from database
+    inventory = [
+        {
+            "id": "1",
+            "equipmentName": "Canon EOS R5",
+            "category": "Camera",
+            "status": "in"
+        },
+        {
+            "id": "2",
+            "equipmentName": "Sony A7 IV",
+            "category": "Camera",
+            "status": "out",
+            "rentalInfo": {
+                "seekerName": "John Doe",
+                "phone": "+91 9876543210",
+                "location": "Mumbai, Maharashtra",
+                "startDate": "2024-01-10",
+                "endDate": "2024-01-12"
+            }
+        },
+        {
+            "id": "3",
+            "equipmentName": "DJI Ronin RS3",
+            "category": "Gimbal",
+            "status": "maintenance"
+        }
+    ]
+    return inventory
+
+@api_router.post("/inventory/equipment")
+async def add_equipment(data: dict):
+    equipment = {
+        **data,
+        "id": str(uuid.uuid4()),
+        "createdAt": datetime.utcnow()
+    }
+    await db.equipment.insert_one(equipment)
+    return {"message": "Equipment added successfully", "equipment": equipment}
+
+@api_router.get("/inventory/equipment")
+async def get_equipment_list():
+    equipment = await db.equipment.find().to_list(1000)
+    return equipment
+
+# ========================
+# Booking Routes
+# ========================
+
+@api_router.post("/bookings")
+async def create_booking(data: dict):
+    booking = {
+        **data,
+        "id": str(uuid.uuid4()),
+        "createdAt": datetime.utcnow(),
+        "status": "pending"
+    }
+    await db.bookings.insert_one(booking)
+    return {"message": "Booking created successfully", "booking": booking}
+
+@api_router.get("/bookings/{user_id}")
+async def get_user_bookings(user_id: str):
+    bookings = await db.bookings.find({"userId": user_id}).to_list(1000)
+    return bookings
+
+# ========================
+# Notification Routes
+# ========================
+
+@api_router.get("/notifications/{user_id}")
+async def get_notifications(user_id: str):
+    notifications = await db.notifications.find({"userId": user_id}).sort("createdAt", -1).to_list(100)
+    return notifications
+
+@api_router.post("/notifications/mark-read")
+async def mark_notification_read(data: dict):
+    notification_id = data.get("notificationId")
+    await db.notifications.update_one(
+        {"id": notification_id},
+        {"$set": {"read": True}}
+    )
+    return {"message": "Notification marked as read"}
+
+# ========================
 # Test Routes
 # ========================
 
