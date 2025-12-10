@@ -63,8 +63,14 @@ export default function PhotographerProfileScreen() {
         equipment,
         pricing,
       });
-      Alert.alert('Success', 'Photographer profile saved successfully');
-      router.back();
+      Alert.alert('Success', 'Photographer profile saved successfully', [
+        {
+          text: 'OK',
+          onPress: () => router.replace('/profile/advanced-profile'),
+        },
+      ]);
+    } catch (error: any) {
+      Alert.alert('Error', error.response?.data?.detail || 'Failed to save profile');
     } catch (error: any) {
       Alert.alert('Error', error.response?.data?.detail || 'Failed to save profile');
     } finally {
