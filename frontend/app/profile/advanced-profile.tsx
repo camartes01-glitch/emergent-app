@@ -33,9 +33,18 @@ const SERVICE_NAMES: Record<string, string> = {
 };
 
 const SERVICE_ROUTES: Record<string, string> = {
+  // Freelancer Services
   photographer: '/profile/services/photographer',
   videographer: '/profile/services/photographer',
+  album_designer: '/profile/services/album-designer',
+  video_editor: '/profile/services/video-editor',
+  web_live_services: '/profile/services/web-live-services',
+  led_wall: '/profile/services/led-wall',
+  fly_cam: '/profile/services/fly-cam',
+  // Business Services
+  photography_firm: '/profile/services/photography-firm',
   camera_rental: '/profile/services/camera-rental',
+  // Service Centres, Outdoor Studios, Editing Studios, Printing Labs - Coming Soon
 };
 
 export default function AdvancedProfileScreen() {
