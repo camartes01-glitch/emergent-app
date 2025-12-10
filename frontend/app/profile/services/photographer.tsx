@@ -71,8 +71,6 @@ export default function PhotographerProfileScreen() {
       ]);
     } catch (error: any) {
       Alert.alert('Error', error.response?.data?.detail || 'Failed to save profile');
-    } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.detail || 'Failed to save profile');
     } finally {
       setLoading(false);
     }
