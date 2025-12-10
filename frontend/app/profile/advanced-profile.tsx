@@ -212,7 +212,7 @@ export default function AdvancedProfileScreen() {
           <Text style={styles.sectionTitle}>Your Selected Services</Text>
           {allServices.map((service, index) => {
             const isCompleted = completedServices.includes(service);
-            const isCurrent = index === currentStep && !isCompleted;
+            const isCurrent = index === getCurrentServiceIndex() && !isCompleted;
             
             return (
               <View
