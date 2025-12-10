@@ -503,4 +503,40 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 32,
+  },
+  editButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.background,
+    borderWidth: 1,
+    borderColor: Colors.primary,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    gap: 6,
+  },
+  editButtonText: {
+    color: Colors.primary,
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  sectionSubtitle: {
+    fontSize: 14,
+    color: Colors.secondary,
+    marginBottom: 16,
+    fontStyle: 'italic',
+  },
+  serviceTextContainer: {
+    flex: 1,
+  },
+  serviceStatus: {
+    fontSize: 12,
+    color: Colors.secondary,
+    marginTop: 2,
+  },
 });
