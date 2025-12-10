@@ -315,6 +315,42 @@ async def save_camera_rental_profile(data: dict):
     await db.service_profiles.insert_one(camera_rental_profile)
     return {"message": "Camera rental profile saved successfully"}
 
+@api_router.post("/profile/album-designer")
+async def save_album_designer_profile(data: dict):
+    profile = {**data, "serviceType": "album_designer", "createdAt": datetime.utcnow()}
+    await db.service_profiles.insert_one(profile)
+    return {"message": "Album Designer profile saved successfully"}
+
+@api_router.post("/profile/video-editor")
+async def save_video_editor_profile(data: dict):
+    profile = {**data, "serviceType": "video_editor", "createdAt": datetime.utcnow()}
+    await db.service_profiles.insert_one(profile)
+    return {"message": "Video Editor profile saved successfully"}
+
+@api_router.post("/profile/web-live-services")
+async def save_web_live_services_profile(data: dict):
+    profile = {**data, "serviceType": "web_live_services", "createdAt": datetime.utcnow()}
+    await db.service_profiles.insert_one(profile)
+    return {"message": "Web Live Services profile saved successfully"}
+
+@api_router.post("/profile/led-wall")
+async def save_led_wall_profile(data: dict):
+    profile = {**data, "serviceType": "led_wall", "createdAt": datetime.utcnow()}
+    await db.service_profiles.insert_one(profile)
+    return {"message": "LED Wall profile saved successfully"}
+
+@api_router.post("/profile/fly-cam")
+async def save_fly_cam_profile(data: dict):
+    profile = {**data, "serviceType": "fly_cam", "createdAt": datetime.utcnow()}
+    await db.service_profiles.insert_one(profile)
+    return {"message": "Fly Cam profile saved successfully"}
+
+@api_router.post("/profile/photography-firm")
+async def save_photography_firm_profile(data: dict):
+    profile = {**data, "serviceType": "photography_firm", "createdAt": datetime.utcnow()}
+    await db.service_profiles.insert_one(profile)
+    return {"message": "Photography Firm profile saved successfully"}
+
 # ========================
 # Inventory Management Routes
 # ========================
