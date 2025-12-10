@@ -134,9 +134,12 @@ export default function AdvancedProfileScreen() {
     }
   };
 
-  const markServiceCompleted = (serviceId: string) => {
+  const markServiceCompleted = async (serviceId: string) => {
     const newCompleted = [...completedServices, serviceId];
     setCompletedServices(newCompleted);
+    
+    // Save to AsyncStorage
+    await AsyncStorage.setItem('completed_services', JSON.stringify(newCompleted));
     
     const nextIndex = allServices.indexOf(serviceId) + 1;
     if (nextIndex < allServices.length) {
@@ -161,6 +164,11 @@ export default function AdvancedProfileScreen() {
         ]
       );
     }
+  };
+
+  // Calculate current step based on completed services
+  const getCurrentServiceIndex = () => {
+    return completedServices.length;
   };
 
   if (loading) {
