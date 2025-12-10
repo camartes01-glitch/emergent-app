@@ -11,7 +11,17 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../constants/colors';
-import { EQUIPMENT_TYPES } from '../constants/serviceData';
+import { 
+  EQUIPMENT_TYPES,
+  CAMERA_BRANDS,
+  CAMERA_MODELS,
+  LENS_BRANDS,
+  GIMBAL_BRANDS,
+  GIMBAL_MODELS,
+  TRIPOD_BRANDS,
+  DRONE_BRANDS,
+  DRONE_MODELS,
+} from '../constants/serviceData';
 
 interface Equipment {
   id: string;
