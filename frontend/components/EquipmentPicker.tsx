@@ -438,4 +438,28 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
+  brandScroll: {
+    marginBottom: 16,
+  },
+  brandButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    marginRight: 8,
+    backgroundColor: Colors.background,
+  },
+  brandButtonActive: {
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
+  },
+  brandButtonText: {
+    fontSize: 14,
+    color: Colors.text,
+  },
+  brandButtonTextActive: {
+    color: Colors.background,
+    fontWeight: '600',
+  },
 });
